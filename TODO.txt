@@ -1,0 +1,6 @@
+- add existing source files to the vscode project
+    - symbolic link them/their directories
+    - vscode extension?
+
+- execute premake5 gmake2 command from vscode generator
+    - should have access to options via _OPTIONS
