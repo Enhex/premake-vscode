@@ -7,7 +7,7 @@
 --              Tom van Dijck
 --              Yehonatan Ballas
 -- Created:     2013/05/06
--- Copyright:   (c) 2008-2020 Jason Perkins and the Premake project
+-- Copyright:   (c) 2008-2020 Yehonatan Ballas, Jason Perkins and the Premake project
 --
 
 local p = premake
@@ -41,11 +41,31 @@ function m.getcompiler(cfg)
 	return toolset
 end
 
+-- cross platform symbolic link creation
+function symlink(target, link)
+	if os.host() == 'windows' then
+		os.execute('cmd.exe /c mklink /d ' .. link .. ' ' .. target)
+	else
+		os.execute('ln -s -f ' .. target .. ' ' .. link)
+	end
+end
+
+-- VS Code only scans for project files inside the project's directory, so symlink them into
+-- the project's directory.
 function m.files(prj)
+	local node_path = ''
 	local tr = project.getsourcetree(prj)
 	tree.traverse(tr, {
+		onbranchenter = function(node, depth)
+			node_path = node_path .. '/' .. node.name
+		end,
+		onbranchexit = function(node, depth)
+			node_path = node_path:sub(1, node_path:len()-(node.name:len()+1))
+		end,
 		onleaf = function(node, depth)
-			_p(depth, '"%s"', node.relpath)
+			local full_path = prj.location .. node_path
+			os.mkdir(full_path)
+			symlink(node.abspath, full_path)
 		end
 	}, true)
 end
@@ -55,6 +75,9 @@ end
 -- Project: Generate vscode tasks.json.
 --
 function m.vscode_tasks(prj)
+
+	m.files(prj)
+
 	p.utf8()
 	--TODO task per project
 	_p('{')
