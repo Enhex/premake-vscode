@@ -181,7 +181,10 @@ function m.vscode_c_cpp_properties(prj)
 			end
 			_p(2, '"intelliSenseMode": "gcc-x64",') --TODO premake toolset
 			_p(2, '"compilerArgs": [')
-				--TODO force include?
+				-- force includes
+				local toolset = m.getcompiler(cfg)
+				local forceincludes = toolset.getforceincludes(cfg)
+				_p(3, '"' .. table.concat(forceincludes, ";") .. '"')
 			_p(2, ']')
 		_p(1, '}')
 		end
