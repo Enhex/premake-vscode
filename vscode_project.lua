@@ -50,34 +50,10 @@ function symlink(target, link)
 	end
 end
 
--- VS Code only scans for project files inside the project's directory, so symlink them into
--- the project's directory.
-function m.files(prj)
-	local node_path = ''
-	local tr = project.getsourcetree(prj)
-	tree.traverse(tr, {
-		onbranchenter = function(node, depth)
-			node_path = node_path .. '/' .. node.name
-		end,
-		onbranchexit = function(node, depth)
-			node_path = node_path:sub(1, node_path:len()-(node.name:len()+1))
-		end,
-		onleaf = function(node, depth)
-			local full_path = prj.location .. node_path
-			os.mkdir(full_path)
-			symlink(node.abspath, full_path)
-		end
-	}, true)
-end
-
-
 --
 -- Project: Generate vscode tasks.json.
 --
 function m.vscode_tasks(prj)
-
-	m.files(prj)
-
 	p.utf8()
 	--TODO task per project
 	_p('{')
@@ -88,7 +64,7 @@ function m.vscode_tasks(prj)
 			_p(2, '"command": "clear && time make -r -j`nproc`",')
 			_p(2, '"args": [],')
 			_p(2, '"options": {')
-				_p(3, '"cwd": "${workspaceFolder}/../"')
+				_p(3, '"cwd": "${workspaceFolder}/"')
 			_p(2, '},')
 			_p(2, '"problemMatcher": [')
 				_p(3, '"$gcc"')
