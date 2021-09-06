@@ -177,7 +177,6 @@ function m.vscode_c_cpp_properties(prj)
 						_p(3, ',"%s"', cfg.defines[i])
 					end
 				end
-				
 			_p(2, '],')
 			_p(2, '"compilerPath": "/usr/bin/g++",') --TODO premake toolset
 			if cfg.cdialect ~= nil then
