@@ -172,9 +172,9 @@ function m.vscode_c_cpp_properties(prj)
 			_p(2, '],')
 			_p(2, '"defines": [')
 				if #cfg.defines > 0 then
-					_p(3, '"%s"', cfg.defines[1])
+					_p(3, '"%s"', cfg.defines[1]:gsub('"','\\"'))
 					for i = 2,#cfg.defines do
-						_p(3, ',"%s"', cfg.defines[i])
+						_p(3, ',"%s"', cfg.defines[i]:gsub('"','\\"'))
 					end
 				end
 			_p(2, '],')
