@@ -85,7 +85,12 @@ function m.vscode_tasks(prj)
 		_p(1, '"tasks": [{')
 			_p(2, '"type": "shell",')
 			_p(2, '"label": "%s",', build_task_name)
-			_p(2, '"command": "clear && time make %s -r -j`nproc`",', prj.name)
+	-- check if ninja is used, otherwise default to make.
+	if os.isfile(prj.location .. '/build.ninja') then
+			_p(2, '"command": "clear && time ninja -j$(nproc)",')
+	else
+			_p(2, '"command": "clear && time make %s -r -j$(nproc)",', prj.name)
+	end
 			_p(2, '"args": [],')
 			_p(2, '"options": {')
 				_p(3, '"cwd": "${workspaceFolder}/../"')

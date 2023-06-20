@@ -10,3 +10,5 @@
 premake5 gmake2
 premake5 vscode
 ```
+
+also supports using [ninja](https://github.com/jimon/premake-ninja) instead of `gmake2`.
