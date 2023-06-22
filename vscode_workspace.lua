@@ -34,7 +34,7 @@ function m.generate(wks)
 			local prj = n.project
 
 			-- Build a relative path from the workspace file to the project file
-			local prjpath = path.getrelative(prj.workspace.location, prj.location .. '/' .. prj.name)
+			local prjpath = path.getrelative(prj.workspace.location, prj.location)
 			p.w('{')
 			p.w('"path": "%s"', prjpath)
 			p.w('},')
