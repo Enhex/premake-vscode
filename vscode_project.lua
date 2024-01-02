@@ -53,21 +53,7 @@ end
 -- VS Code only scans for project files inside the project's directory, so symlink them into
 -- the project's directory.
 function m.files(prj)
-	local node_path = ''
-	local tr = project.getsourcetree(prj)
-	tree.traverse(tr, {
-		onbranchenter = function(node, depth)
-			node_path = node_path .. '/' .. node.name
-		end,
-		onbranchexit = function(node, depth)
-			node_path = node_path:sub(1, node_path:len()-(node.name:len()+1))
-		end,
-		onleaf = function(node, depth)
-			local full_path = prj.location .. node_path
-			os.mkdir(full_path)
-			symlink(node.abspath, full_path)
-		end
-	}, true)
+	
 end
 
 
@@ -123,7 +109,7 @@ function m.vscode_launch(prj)
 		else
 			_p(1, ',{')
 		end
-			_p(2, '"name": "%s: Build and debug",', prj.name)
+			_p(2, '"name": "%s (%s): Build and debug",', prj.name,cfg.platform)
 			_p(2, '"type": "cppdbg",')
 			_p(2, '"request": "launch",')
 			_p(2, '"program": "%s/%s",', cfg.buildtarget.directory, prj.name)
