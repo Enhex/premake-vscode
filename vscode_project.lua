@@ -87,7 +87,7 @@ function m.vscode_tasks(prj)
 			_p(2, '"label": "%s",', build_task_name)
 	-- check if ninja is used, otherwise default to make.
 	if os.isfile(prj.location .. '/build.ninja') then
-			_p(2, '"command": "clear && time ninja -j$(nproc)",')
+			_p(2, '"command": "clear && time ninja",')
 	else
 			_p(2, '"command": "clear && time make %s -r -j$(nproc)",', prj.name)
 	end
