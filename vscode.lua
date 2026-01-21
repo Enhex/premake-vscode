@@ -23,7 +23,7 @@ local project = p.project
 function vscode.generateWorkspace(wks)
     p.eol("\r\n")
     p.indent("  ")
-    
+
     p.generate(wks, ".code-workspace", vscode.workspace.generate)
 end
 
