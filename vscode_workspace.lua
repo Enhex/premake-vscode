@@ -33,11 +33,29 @@ function m.generate(wks)
 		onleaf = function(n)
 			local prj = n.project
 
-			-- Build a relative path from the workspace file to the project file
-			local prjpath = path.getrelative(prj.workspace.location, prj.location .. '/' .. prj.name)
-			p.w('{')
+			local prjpath = path.getrelative(prj.workspace.location, prj.location)
+ 			p.w('{')
 			p.w('"path": "%s"', prjpath)
-			p.w('},')
+ 			p.w('},')
+
+			-- add root source file directories
+			local root_src_dirs = {}
+			local tr = project.getsourcetree(prj)
+			tree.traverse(tr, {
+				onleaf = function(node, depth)
+					if depth ~= 0 or node.abspath == nil then
+						return
+					end
+					root_src_dirs[path.getdirectory(node.abspath)] = true
+				end
+			})
+
+			for src_dir in pairs(root_src_dirs) do
+				local src_dir_rel = path.getrelative(prj.workspace.location, src_dir)
+				p.w('{')
+				p.w('"path": "%s"', src_dir_rel)
+				p.w('},')
+			end
 		end,
 	})
 

@@ -32,9 +32,9 @@ function vscode.generateProject(prj)
     p.indent("  ")
 
     if project.isc(prj) or project.iscpp(prj) then
-        p.generate(prj, prj.location .. '/' .. prj.name .. "/.vscode/tasks.json", vscode.project.vscode_tasks)
-        p.generate(prj, prj.location .. '/' .. prj.name .. "/.vscode/launch.json", vscode.project.vscode_launch)
-        p.generate(prj, prj.location .. '/' .. prj.name .. "/.vscode/c_cpp_properties.json", vscode.project.vscode_c_cpp_properties)
+        p.generate(prj, prj.location .. "/.vscode/tasks.json", vscode.project.vscode_tasks)
+        p.generate(prj, prj.location .. "/.vscode/launch.json", vscode.project.vscode_launch)
+        p.generate(prj, prj.location .. "/.vscode/c_cpp_properties.json", vscode.project.vscode_c_cpp_properties)
     end
 end
 
