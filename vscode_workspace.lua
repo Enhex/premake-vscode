@@ -59,7 +59,14 @@ function m.generate(wks)
 		end,
 	})
 
+	-- for clangd to find compile_commands.json in the build dir
+	p.w('],')
+	p.w('"settings":{')
+	p.w('"clangd.arguments":[')
+	p.w('"--compile-commands-dir=."')
 	p.w(']}')
+
+	p.w('}')
 
 	--TODO wks.startproject
 end
