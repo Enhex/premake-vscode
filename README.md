@@ -5,10 +5,10 @@
 
 2. Add the line `require "vscode"` preferably to your [premake-system.lua](https://github.com/premake/premake-core/wiki/System-Scripts), or to your premake5.lua script.
 
-3. Generate (currently need to call gmake2 manually)
+3. Generate
 ```sh
-premake5 gmake2
+premake5 gmake
 premake5 vscode
 ```
 
-also supports using [ninja](https://github.com/jimon/premake-ninja) instead of `gmake2`.
+also supports using [ninja](https://github.com/jimon/premake-ninja) instead of `gmake`.
