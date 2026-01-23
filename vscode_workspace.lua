@@ -40,18 +40,33 @@ function m.generate(wks)
 
 			-- add root source file directories
 			local root_src_dirs = {}
+			local non_root_path = '' -- used to remove the non root part from the end of a leaf node's path
 			local tr = project.getsourcetree(prj)
 			tree.traverse(tr, {
+				onbranchenter = function(node, depth)
+					if depth ~= 0 then
+						non_root_path = non_root_path .. '/' .. node.name
+					end
+				end,
+				onbranchexit = function(node, depth)
+					if depth ~= 0 then
+						non_root_path = non_root_path:sub(1, non_root_path:len()-(node.name:len()+1))
+					end
+				end,
 				onleaf = function(node, depth)
-					if depth ~= 0 or node.abspath == nil then
+					if node.relpath == nil then
 						return
 					end
-					root_src_dirs[path.getdirectory(node.abspath)] = true
+					non_root_path = non_root_path ..'/'.. node.name
+					local rel_root_path = node.relpath:sub(1, node.relpath:len()-(non_root_path:len()))
+					non_root_path = non_root_path:sub(1, non_root_path:len()-(node.name:len()+1))
+					print(rel_root_path)
+					root_src_dirs[rel_root_path] = true
 				end
 			})
 
-			for src_dir in pairs(root_src_dirs) do
-				local src_dir_rel = path.getrelative(prj.workspace.location, src_dir)
+			for src_dir_rel in pairs(root_src_dirs) do
+				print(src_dir_rel)
 				p.w('{')
 				p.w('"path": "%s"', src_dir_rel)
 				p.w('},')
