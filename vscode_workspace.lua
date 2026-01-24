@@ -67,13 +67,11 @@ function m.generate(wks)
 					non_root_path = non_root_path ..'/'.. node.name
 					local rel_root_path = node.relpath:sub(1, node.relpath:len()-(non_root_path:len()))
 					non_root_path = non_root_path:sub(1, non_root_path:len()-(node.name:len()+1))
-					print(rel_root_path)
 					root_src_dirs[rel_root_path] = true
 				end
 			})
 
 			for src_dir_rel in pairs(root_src_dirs) do
-				print(src_dir_rel)
 				p.w('{')
 				p.w('"path": "%s"', src_dir_rel)
 				p.w('},')
