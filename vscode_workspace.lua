@@ -25,6 +25,11 @@ function m.generate(wks)
 	p.utf8()
 	p.w('{"folders": [')
 
+	-- workspace should be first for clangd to use it as the working directory
+	p.w('{')
+	p.w('"path": "."')
+	p.w('},')
+
 	--
 	-- Project list
 	--
@@ -33,10 +38,12 @@ function m.generate(wks)
 		onleaf = function(n)
 			local prj = n.project
 
-			local prjpath = path.getrelative(prj.workspace.location, prj.location)
- 			p.w('{')
-			p.w('"path": "%s"', prjpath)
- 			p.w('},')
+			if prj.workspace.location ~= prj.location then
+				local prjpath = path.getrelative(prj.workspace.location, prj.location)
+				p.w('{')
+				p.w('"path": "%s"', prjpath)
+				p.w('},')
+			end
 
 			-- add root source file directories
 			local root_src_dirs = {}
