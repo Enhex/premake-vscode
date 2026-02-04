@@ -92,8 +92,8 @@ function m.vscode_launch(prj)
 		end
 			_p(2, '"name": "%s: Build and debug",', prj.name)
 			--_p(2, '"type": "cppdbg",') -- microsoft's C++ extension. TODO detect which is used and choose it?
-			--_p(2, '"type": "lldb",') -- CodeLLVM
-			_p(2, '"type": "lldb-dap",') -- LLVM's LLDB DAP
+			_p(2, '"type": "lldb",') -- CodeLLVM
+			--_p(2, '"type": "lldb-dap",') -- LLVM's LLDB DAP
 			_p(2, '"request": "launch",')
 			_p(2, '"program": "%s/%s",', cfg.buildtarget.directory, prj.name)
 			_p(2, '"args": [],')
