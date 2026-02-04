@@ -33,6 +33,7 @@ function m.generate(wks)
 	--
 	-- Project list
 	--
+	local root_src_dirs = {}
 	local tr = workspace.grouptree(wks)
 	tree.traverse(tr, {
 		onleaf = function(n)
@@ -46,7 +47,6 @@ function m.generate(wks)
 			end
 
 			-- add root source file directories
-			local root_src_dirs = {}
 			local non_root_path = '' -- used to remove the non root part from the end of a leaf node's path
 			local tr = project.getsourcetree(prj)
 			tree.traverse(tr, {
@@ -70,14 +70,15 @@ function m.generate(wks)
 					root_src_dirs[rel_root_path] = true
 				end
 			})
-
-			for src_dir_rel in pairs(root_src_dirs) do
-				p.w('{')
-				p.w('"path": "%s"', src_dir_rel)
-				p.w('},')
-			end
 		end,
 	})
+
+	for src_dir_rel in pairs(root_src_dirs) do
+		print(src_dir_rel)
+		p.w('{')
+		p.w('"path": "%s"', src_dir_rel)
+		p.w('},')
+	end
 
 	-- for clangd to find compile_commands.json in the build dir
 	p.w('],')
