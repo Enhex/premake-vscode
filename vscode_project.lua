@@ -19,18 +19,6 @@ local vscode = p.modules.vscode
 vscode.project = {}
 local m = vscode.project
 
-local cpp_standard = {}
-cpp_standard["C++98"] = 98
-cpp_standard["C++11"] = 11
-cpp_standard["C++14"] = 14
-cpp_standard["C++17"] = 17
-cpp_standard["C++20"] = 20
-cpp_standard["gnu++98"] = 98
-cpp_standard["gnu++11"] = 11
-cpp_standard["gnu++14"] = 14
-cpp_standard["gnu++17"] = 17
-cpp_standard["gnu++20"] = 20
-
 local build_task_name = "C/C++: build"
 
 function m.getcompiler(cfg)

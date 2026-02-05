@@ -91,3 +91,91 @@ function m.generate(wks)
 
 	--TODO wks.startproject
 end
+
+function m.generate_tasks(wks)
+	p.utf8()
+	_p('{')
+	_p(1, '"version": "2.0.0",')
+	_p(1, '"tasks": [')
+
+	local tr = workspace.grouptree(wks)
+	tree.traverse(tr, {
+		onleaf = function(n)
+		local prj = n.project
+		_p(1, '{')
+		_p(2, '"type": "shell",')
+		_p(2, '"label": "build %s",', prj.name)
+		-- check if ninja is used, otherwise default to make.
+		if os.isfile(prj.location .. '/build.ninja') then
+		_p(2, '"command": "clear && time ninja",')
+		else
+		_p(2, '"command": "clear && time make %s -r -j$(nproc)",', prj.name)
+		end
+		_p(2, '"args": [],')
+		_p(2, '"options": {')
+			_p(3, '"cwd": "${workspaceFolder}/"')
+		_p(2, '},')
+		_p(2, '"problemMatcher": [')
+			_p(3, '"$gcc"')
+		_p(2, '],')
+		_p(2, '"group": {')
+			_p(3, '"kind": "build",')
+			_p(3, '"isDefault": true')
+		_p(2, '},')
+		_p(1, '},')
+		end,
+	})
+	_p(1, ']')
+	_p('}')
+end
+
+function m.generate_launch(wks)
+	p.utf8()
+	_p('{')
+	_p(1, '"configurations": [')
+
+	local first_cfg = true
+	local tr = workspace.grouptree(wks)
+	tree.traverse(tr, {
+		onleaf = function(n)
+			local prj = n.project
+			for cfg in project.eachconfig(prj) do
+			if first_cfg then
+				first_cfg = false
+				_p(1, '{')
+			else
+				_p(1, ',{')
+			end
+				_p(2, '"name": "%s: Build and debug",', prj.name)
+				--_p(2, '"type": "cppdbg",') -- microsoft's C++ extension. TODO detect which is used and choose it?
+				_p(2, '"type": "lldb",') -- CodeLLVM
+				--_p(2, '"type": "lldb-dap",') -- LLVM's LLDB DAP
+				_p(2, '"request": "launch",')
+				_p(2, '"program": "%s/%s",', cfg.buildtarget.directory, prj.name)
+				_p(2, '"args": [],')
+				--_p(2, '"stopAtEntry": false,')
+				_p(2, '"cwd": "${workspaceFolder}/",')
+				--_p(2, '"externalConsole": false,')
+				-- _p(2, '"MIMode": "gdb",')
+				-- _p(2, '"setupCommands": [')
+				-- 	_p(3, '{')
+				-- 	_p(3, '"description": "Enable pretty-printing for gdb",')
+				-- 	_p(3, '"text": "-enable-pretty-printing",')
+				-- 	_p(3, '"ignoreFailures": true')
+				-- 	_p(3, '},')
+				-- 	_p(3, '{')
+				-- 	_p(3, '"description": "Enable break on all-exceptions",')
+				-- 	_p(3, '"text": "catch throw",')
+				-- 	_p(3, '"ignoreFailures": true')
+				-- 	_p(3, '}')
+				-- _p(2, '],')
+				-- _p(2, '"miDebuggerPath": "/usr/bin/gdb",')
+				_p(2, '"preLaunchTask": "build %s"', prj.name)
+			_p(1, '}')
+			end
+		end,
+	})
+
+	_p(1, ']')
+	_p('}')
+end

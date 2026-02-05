@@ -25,17 +25,8 @@ function vscode.generateWorkspace(wks)
     p.indent("  ")
 
     p.generate(wks, ".code-workspace", vscode.workspace.generate)
-end
-
-function vscode.generateProject(prj)
-    p.eol("\r\n")
-    p.indent("  ")
-
-    if project.isc(prj) or project.iscpp(prj) then
-        p.generate(prj, prj.location .. "/.vscode/tasks.json", vscode.project.vscode_tasks)
-        p.generate(prj, prj.location .. "/.vscode/launch.json", vscode.project.vscode_launch)
-        p.generate(prj, prj.location .. "/.vscode/c_cpp_properties.json", vscode.project.vscode_c_cpp_properties)
-    end
+    p.generate(wks, wks.location .. "/.vscode/tasks.json", vscode.workspace.generate_tasks)
+    p.generate(wks, wks.location .. "/.vscode/launch.json", vscode.workspace.generate_launch)
 end
 
 function vscode.cleanWorkspace(wks)
@@ -47,7 +38,6 @@ function vscode.cleanProject(prj)
 end
 
 include("vscode_workspace.lua")
-include("vscode_project.lua")
 
 include("_preload.lua")
 

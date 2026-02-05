@@ -34,9 +34,6 @@ newaction
 	onWorkspace = function(wks)
 		p.modules.vscode.generateWorkspace(wks)
 	end,
-	onProject = function(prj)
-		p.modules.vscode.generateProject(prj)
-	end,
 
 	onCleanWorkspace = function(wks)
 		p.modules.vscode.cleanWorkspace(wks)
