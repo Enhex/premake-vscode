@@ -18,6 +18,14 @@ local vscode = p.modules.vscode
 vscode.workspace = {}
 local m = vscode.workspace
 
+function m.getcompiler(cfg)
+	local toolset = p.tools[_OPTIONS.cc or cfg.toolset or p.CLANG]
+	if not toolset then
+		error("Invalid toolset '" + (_OPTIONS.cc or cfg.toolset) + "'")
+	end
+	return toolset
+end
+
 --
 -- Generate a vscode file
 --
@@ -179,5 +187,60 @@ function m.generate_launch(wks)
 	})
 
 	_p(1, ']')
+	_p('}')
+end
+
+function m.c_cpp_properties(wks)
+	_p('{')
+	_p(1, '"configurations": [')
+
+	local first_cfg = true
+	local tr = workspace.grouptree(wks)
+	tree.traverse(tr, {
+		onleaf = function(n)
+			local prj = n.project
+			for cfg in project.eachconfig(prj) do
+				if first_cfg then
+					first_cfg = false
+					_p(1, '{')
+				else
+					_p(1, ',{')
+				end
+				_p(2, '"name": "%s %s",', prj.name, cfg.name)
+				_p(2, '"includePath": [')
+				_p(3, '"${workspaceFolder}/**"')
+				for _, includedir in ipairs(cfg.includedirs) do
+					_p(3, ',"%s"', includedir)
+				end
+				_p(2, '],')
+				_p(2, '"defines": [')
+				if #cfg.defines > 0 then
+					_p(3, '"%s"', cfg.defines[1]:gsub('"','\\"'))
+					for i = 2,#cfg.defines do
+						_p(3, ',"%s"', cfg.defines[i]:gsub('"','\\"'))
+					end
+				end
+				_p(2, '],')
+				_p(2, '"compilerPath": "/usr/bin/g++",') --TODO premake toolset
+				if cfg.cdialect ~= nil then
+					_p(2, '"cStandard": "%s",', cfg.cdialect:lower())
+				end
+				if cfg.cppdialect ~= nil then
+					_p(2, '"cppStandard": "%s",', cfg.cppdialect:lower())
+				end
+				_p(2, '"intelliSenseMode": "gcc-x64",') --TODO premake toolset
+				_p(2, '"compilerArgs": [')
+				-- force includes
+				local toolset = m.getcompiler(cfg)
+				local forceincludes = toolset.getforceincludes(cfg)
+				_p(3, '"' .. table.concat(forceincludes, ";") .. '"')
+				_p(2, ']')
+				_p(1, '}')
+			end
+		end,
+	})
+
+	_p(1, '],')
+	_p(1, '"version": 4')
 	_p('}')
 end
