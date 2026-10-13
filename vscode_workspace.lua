@@ -82,7 +82,6 @@ function m.generate(wks)
 	})
 
 	for src_dir_rel in pairs(root_src_dirs) do
-		print(src_dir_rel)
 		p.w('{')
 		p.w('"path": "%s"', src_dir_rel)
 		p.w('},')
